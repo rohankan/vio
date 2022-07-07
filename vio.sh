@@ -21,8 +21,14 @@ if [ "$command" = "export" ] || [ "$command" = "e" ]; then
 	fi
 	echo "export $shorthand=$directory;" >> "$storage";
 else
-	shorthand="$2"
-	source "$storage"; cd "${!$shorthand}"
+	shorthand="$command"
+	source "$storage"; directory=$(printenv $shorthand)
+	if [ -z "$directory" ]; then
+		echo "Invalid shorthand provided. Valid shorthands are as follows -"
+		cat "$storage"
+		exit 1
+	fi
+	cd "$directory"
 	vim `fzf`
 fi
 
